@@ -2,19 +2,18 @@
 ---@class ShopHooks
 local DirtHooks = {}
 local TableHelpers = require "Utils.TableHelpers"
-GlobalOreDict = {
-	OreIron = 0,
-	OreGold = 0,
-	OreCloutium = 0,
-	OreCorestone = 0,
-	OreScrap = 0,
-	OreShard = 0
-}
-
 
 ---Register all battle hooks
 ---@param hookManager HookManager
 ---@param dependencies table
+
+local function hasPlayerCharacter()
+    local pc = FindFirstOf("PlayerController")
+    if not pc or not pc:IsValid() then return false end
+    local pawn = pc.Pawn          -- property name in the engine's PlayerController
+    return pawn ~= nil and pawn:IsValid()
+end
+
 function DirtHooks:Register(hookManager, dependencies)
     local logger = dependencies.logger
 
@@ -27,6 +26,8 @@ function DirtHooks:Register(hookManager, dependencies)
         "Dirt - ReceiveBeginPlay"
     )
     logger:info("Dirt hooks registered")
+	print("Dirt hooks registered")
+	print(hasPlayerCharacter())
 end
 
 local function GetChunkInfo(chunk)
@@ -38,6 +39,7 @@ local function GetChunkInfo(chunk)
 	}
 	return DataTable
 end
+
 
 function DirtHooks:ReceiveBeginPlay(context)
     local chunk = context:get()

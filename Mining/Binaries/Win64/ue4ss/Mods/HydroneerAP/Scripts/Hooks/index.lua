@@ -1,7 +1,7 @@
 local HookManager    = require "Hooks.Core.HookManager"
 --local ChestHook      = require "Hooks.IndividualHooks.ChestHooks"
 --local BattleHooks    = require "Hooks.IndividualHooks.BattleHooks"
---local SaveHooks      = require "Hooks.IndividualHooks.SaveHooks"
+local SaveHooks      = require "Hooks.IndividualHooks.SaveHooks"
 --local QuestHooks     = require "Hooks.IndividualHooks.QuestHooks"
 --local LocationHooks  = require "Hooks.IndividualHooks.LocationHooks"
 --local CharacterHooks = require "Hooks.IndividualHooks.CharacterHooks"
@@ -44,7 +44,7 @@ function Hooks:Register()
 
     --ChestHook:Register(hookManager, dependencies)
     --BattleHooks:Register(hookManager, dependencies)
-    --SaveHooks:Register(hookManager, dependencies)
+    SaveHooks:Register(hookManager, dependencies)
     --QuestHooks:Register(hookManager, dependencies)
     --LocationHooks:Register(hookManager, dependencies)
     --CharacterHooks:Register(hookManager, dependencies)

@@ -20,7 +20,16 @@ Utils      = require "Utils.index"
 print("[HydroneerAP] Mod loaded!")
 Logger:initialize()   -- sets logFile so Logger doesn't fall back to Debug.print
 
-local ok, err = pcall(function() Hooks:Register() end)
-if not ok then
-    print("[HydroneerAP] Hooks:Register failed: " .. tostring(err) .. "\n")
+local function RegisterHooks()
+	print("Loading completed, registering hooks\n")
+	local ok, err = pcall(function() Hooks:Register() end)
+	if not ok then
+		print("[HydroneerAP] Hooks:Register failed: " .. tostring(err) .. "\n")
+	end
 end
+
+RegisterHook("/Game/GM_Hydroneer.GM_Hydroneer_C:OnCompleted_04443C294CDB96DED26005BF09499B5C", function(ctx, newPawn)
+		RegisterHooks() 
+		print("HI")
+	-- start your tracking / load your sidecar file here
+end)
