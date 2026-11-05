@@ -7,12 +7,6 @@ local TableHelpers = require "Utils.TableHelpers"
 ---@param hookManager HookManager
 ---@param dependencies table
 
-local function hasPlayerCharacter()
-    local pc = FindFirstOf("PlayerController")
-    if not pc or not pc:IsValid() then return false end
-    local pawn = pc.Pawn          -- property name in the engine's PlayerController
-    return pawn ~= nil and pawn:IsValid()
-end
 
 function DirtHooks:Register(hookManager, dependencies)
     local logger = dependencies.logger
@@ -26,8 +20,7 @@ function DirtHooks:Register(hookManager, dependencies)
         "Dirt - ReceiveBeginPlay"
     )
     logger:info("Dirt hooks registered")
-	print("Dirt hooks registered")
-	print(hasPlayerCharacter())
+	--print("Dirt hooks registered")
 end
 
 local function GetChunkInfo(chunk)

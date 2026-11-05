@@ -24,16 +24,45 @@ print("[HydroneerAP] Mod loaded!")
 Logger:initialize()   -- sets logFile so Logger doesn't fall back to Debug.print
 
 local function RegisterHooks()
-	print("Loading completed, registering hooks\n")
+	print("[HydroneerAP - Hooks] - Loading completed, registering hooks\n")
 	local ok, err = pcall(function() Hooks:Register() end)
 	if not ok then
-		print("[HydroneerAP] Hooks:Register failed: " .. tostring(err) .. "\n")
+		print("[HydroneerAP - Hooks] - Hooks:Register failed: " .. tostring(err) .. "\n")
+	end
+end
+local function UnregisterHooks()
+	print("[HydroneerAP - Hooks] - Player exiting, removing hooks\n")
+	local ok, err = pcall(function() Hooks:Unregister() end)
+	if not ok then
+		print("[HydroneerAP - Hooks] - Hooks:Unregister failed: " .. tostring(err) .. "\n")
 	end
 end
 ExecuteInGameThread(function()
-	RegisterHook("/Game/GM_Hydroneer.GM_Hydroneer_C:OnCompleted_04443C294CDB96DED26005BF09499B5C", function(ctx, newPawn)
-			RegisterHooks() 
-			print("HI")
-		-- start your tracking / load your sidecar file here
-	end)
+    RegisterHook(
+        "/Game/GM_Hydroneer.GM_Hydroneer_C:OnCompleted_04443C294CDB96DED26005BF09499B5C",
+        function(context, ...)
+            RegisterHooks()
+        end
+    )
+end)
+
+ExecuteInGameThread(function()
+    RegisterHook(
+        "/Game/BP_GameController.BP_GameController_C:ReceiveDestroyed",
+        function(context, ...)
+            UnregisterHooks()
+        end
+    )
+end)
+ExecuteInGameThread(function()
+    RegisterHook(
+        "/Game/UI/MainMenu/UI_Menu_SaveManager.UI_Menu_SaveManager_C:SaveSelected",
+        function(ctx, save)
+            local ok, s = pcall(function() return save:get():ToString() end)
+            if ok and s and s ~= "" then
+                CurrentSlot = s
+                print("Slot: " .. s .. "\n")
+            end
+        end
+    )
 end)
