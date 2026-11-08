@@ -13,7 +13,18 @@ GlobalOreDict = {
 	OreCloutium = 0,
 	OreCorestone = 0,
 	OreScrap = 0,
-	OreShard = 0
+	OreShard = 0,
+	GemSaphire = 0,
+	GemRuby = 0,
+	GemEmerald = 0,
+	GemDiamond = 0,
+	GemOnyx = 0
+}
+
+GlobalQuestDict = {
+	Farming = 0,
+	Prospecting = 0,
+	Crafting = 0
 }
 ---Register all save hooks
 ---@param hookManager HookManager
@@ -52,18 +63,19 @@ function SaveHooks:Register(hookManager, dependencies)
         --self.dumpProps(context, ...)
     end,
     "Save - SaveSelected"
-)
+	)
+	
 	logger:info("Save hooks registered")
 	--print("Save hooks registered")
 end
 
 function SaveHooks:SaveGame(context)
-    local controller = context:get()
+	local controller = context:get()
     local path = savePath(controller)
     local tmp = path .. ".tmp"
 
     -- write_file throws on failure, so pcall it
-    local ok, err = pcall(json.write_file, tmp, { ores = GlobalOreDict })
+    local ok, err = pcall(json.write_file, tmp, { ores = GlobalOreDict,quests = GlobalQuestDict})
     if not ok then
         print("Save failed: " .. tostring(err) .. "\n")
         return
@@ -90,6 +102,9 @@ function SaveHooks:LoadGame(controller)
     -- read_file returns nil when the file doesn't exist yet
     for k in pairs(GlobalOreDict) do
         GlobalOreDict[k] = (data and data.ores and tonumber(data.ores[k])) or 0
+    end
+	for k in pairs(GlobalQuestDict) do
+        GlobalQuestDict[k] = (data and data.quests and tonumber(data.quests[k])) or 0
     end
 end
 

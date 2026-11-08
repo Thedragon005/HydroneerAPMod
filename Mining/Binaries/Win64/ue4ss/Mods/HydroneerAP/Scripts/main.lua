@@ -18,7 +18,42 @@ Utils      = require "Utils.index"
 
 
 --Wait for main menu ????????????? Mod is failing at first now
+HooksRegistered = false
 
+
+local function GetGM()
+    local gm = FindFirstOf("GM_Hydroneer_C")
+    if gm and gm:IsValid() and not gm:GetFullName():find("Default__", 1, true) then
+        return gm
+    end
+end
+
+local function QuerySlot()
+    local lib = StaticFindObject("/Game/BPFL_Game.Default__BPFL_Game_C")
+    if not (lib and lib:IsValid()) then return nil end
+    local ctx = GetGM() or FindFirstOf("BP_GameState_C")
+    local out = {}
+    local ok = pcall(function() lib:GetRootSaveSlot(ctx, out) end)
+    if not ok or out.Slot == nil then return nil end
+    local ok2, s = pcall(function() return out.Slot:ToString() end)
+    if ok2 and s and s ~= "" then return s end
+    return nil
+end
+
+local function GetSlotWhenReady(tries)
+    local s = QuerySlot()
+    if s then CurrentSlot = s; print("Slot: " .. s); return end
+    if (tries or 0) < 20 then
+        ExecuteWithDelay(500, function() GetSlotWhenReady((tries or 0) + 1) end)
+    else
+        print("Slot not available after retries")
+    end
+end
+
+local function IsInGame()
+    local gm = GetGM()
+    return gm ~= nil and gm["InGame?"] == true
+end
 
 print("[HydroneerAP] Mod loaded!")
 Logger:initialize()   -- sets logFile so Logger doesn't fall back to Debug.print
@@ -26,6 +61,7 @@ Logger:initialize()   -- sets logFile so Logger doesn't fall back to Debug.print
 local function RegisterHooks()
 	print("[HydroneerAP - Hooks] - Loading completed, registering hooks\n")
 	local ok, err = pcall(function() Hooks:Register() end)
+	HooksRegistered = true
 	if not ok then
 		print("[HydroneerAP - Hooks] - Hooks:Register failed: " .. tostring(err) .. "\n")
 	end
@@ -33,15 +69,34 @@ end
 local function UnregisterHooks()
 	print("[HydroneerAP - Hooks] - Player exiting, removing hooks\n")
 	local ok, err = pcall(function() Hooks:Unregister() end)
+	HooksRegistered = false
 	if not ok then
 		print("[HydroneerAP - Hooks] - Hooks:Unregister failed: " .. tostring(err) .. "\n")
 	end
 end
+
+-- Execute the hooking function if in-game, for debug maybe or AP-reconnection?
+ExecuteInGameThread(function()
+	if HooksRegistered == false then
+		if IsInGame() then
+			RegisterHooks()
+			print(IsInGame())
+			GetSlotWhenReady()
+		end
+	end
+end)
+
 ExecuteInGameThread(function()
     RegisterHook(
         "/Game/GM_Hydroneer.GM_Hydroneer_C:OnCompleted_04443C294CDB96DED26005BF09499B5C",
         function(context, ...)
-            RegisterHooks()
+			if HooksRegistered == false then
+				if IsInGame() then
+					RegisterHooks()
+					print(IsInGame())
+					GetSlotWhenReady()
+				end
+			end
         end
     )
 end)
