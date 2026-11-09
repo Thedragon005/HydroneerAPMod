@@ -47,6 +47,13 @@ function DirtHooks:Register(hookManager, dependencies)
 		end,
         "GrindingWheel - GrindGem"
     )
+	hookManager:Register(
+        "/Game/WorldObj/Items/BuildItems/Conveyors/BP_HookGemPolisher.BP_HookGemPolisher_C:SpawnGem",
+        function(context, OldUncut)
+			self:GrindGem(context, OldUncut)
+		end,
+        "HookGemPolisher - GrindGem"
+    )
     logger:info("Dirt hooks registered")
 	--print("Dirt hooks registered")
 end
@@ -57,9 +64,8 @@ function DirtHooks:ReceiveBeginPlay(context)
 
     local info = GetChunkInfo(chunk)
 
-    -- Cut gems are counted in GrindGem. Skip them here so they are not counted
-    -- twice, including when they spawn again on a save load.
-    if info.class:match("^BP_Gem") then return end
+    -- Prevent uncut gems from being counted, we need to grind them to count
+	if info.class:match("^BP_Uncut") then return end
 
     -- no owner = freshly spawned chunk
     if not IsValidObj(info.owner) then
@@ -71,17 +77,20 @@ function DirtHooks:ReceiveBeginPlay(context)
     end
 end
 
-function DirtHooks:GrindGem(context, uncutGem)
-    print("Hello")
-	local ok, gem = pcall(function() return uncutGem:get() end)
+function DirtHooks:GrindGem(context, gemParam)
+    local ok, gem = pcall(function() return gemParam:get() end)
     if not (ok and IsValidObj(gem)) then return end
-    local kind = ClassName(gem):match("^BP_Uncut([^_]+)_")   -- "Ruby"
-    print(ClassName(gem))
-	print(kind)
-	if not kind then return end
 
-    print("Grinding " .. gem:GetFullName())
-    CountOre("Gem" .. kind)                                   -- "GemRuby"
+    -- wheel:    instance "BP_UncutRuby_C_2147482345"
+    -- polisher: class    "BP_GemEmerald_C"
+    local name = gem:GetFName():ToString()
+    local kind = name:match("^BP_Uncut([^_]+)_C") or name:match("^BP_Gem([^_]+)_C")
+    if not kind then
+        print("GrindGem: unexpected gem " .. name)
+        return
+    end
+
+    CountOre("Gem" .. kind)    -- "GemEmerald"
 end
 
 return DirtHooks
