@@ -1,7 +1,7 @@
 local HookManager    = require "Hooks.Core.HookManager"
 --local ChestHook      = require "Hooks.IndividualHooks.ChestHooks"
 --local BattleHooks    = require "Hooks.IndividualHooks.BattleHooks"
-local SaveHooks      = require "Hooks.IndividualHooks.SaveHooks"
+SaveHooks      = require "Hooks.IndividualHooks.SaveHooks"
 local QuestHooks     = require "Hooks.IndividualHooks.QuestHooks"
 --local LocationHooks  = require "Hooks.IndividualHooks.LocationHooks"
 --local CharacterHooks = require "Hooks.IndividualHooks.CharacterHooks"

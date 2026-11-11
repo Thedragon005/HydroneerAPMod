@@ -24,7 +24,12 @@ GlobalOreDict = {
 GlobalQuestDict = {
 	Farming = 0,
 	Prospecting = 0,
-	Crafting = 0
+	Crafting = 0,
+	KingGuard01 = false,
+	KingGuard02 = false,
+	KingGuard03 = false,
+	KingGuard04 = false,
+	King = false
 }
 ---Register all save hooks
 ---@param hookManager HookManager
@@ -89,11 +94,16 @@ function SaveHooks:SaveGame(context)
         return
     end
 
-    print("Saved ore counts to " .. path .. "\n")
+    print("Saved location counts to " .. path .. "\n")
 end
 
-function SaveHooks:LoadGame(controller)
-    local ok, data = pcall(json.read_file, savePath(controller))
+function SaveHooks:LoadGame()
+    -- Directly utilizing the absolute path you specified
+    -- Step up twice from Binaries\Win64 to reach the root "Mining" folder
+	local path = "..\\..\\Content\\Paks\\LogicMods\\HydroneerRandomizer_data\\save_" .. slotKey() .. ".json"
+
+	print("Resolved Path: " .. path)
+	local ok, data = pcall(json.read_file, path)
     if not ok then
         print("Load failed (bad JSON?): " .. tostring(data) .. "\n")
         data = nil
@@ -106,6 +116,11 @@ function SaveHooks:LoadGame(controller)
 	for k in pairs(GlobalQuestDict) do
         GlobalQuestDict[k] = (data and data.quests and tonumber(data.quests[k])) or 0
     end
+	print("Loaded location counts from " .. path .. "\n")
+	---[[
+	print("Ores:"..TableHelpers.Dump(GlobalQuestDict))
+	print("Quests:"..TableHelpers.Dump(GlobalQuestDict))
+	--]]
 end
 
 return SaveHooks

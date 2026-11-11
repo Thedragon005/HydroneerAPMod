@@ -82,6 +82,7 @@ ExecuteInGameThread(function()
 			RegisterHooks()
 			print(IsInGame())
 			GetSlotWhenReady()
+			SaveHooks:LoadGame()
 		end
 	end
 end)
@@ -95,6 +96,7 @@ ExecuteInGameThread(function()
 					RegisterHooks()
 					print(IsInGame())
 					GetSlotWhenReady()
+					SaveHooks:LoadGame()
 				end
 			end
         end

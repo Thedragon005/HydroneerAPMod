@@ -26,7 +26,7 @@ end
 
 local function CountOre(key)
     GlobalOreDict[key] = (GlobalOreDict[key] or 0) + 1
-    print(key.." : "..TableHelpers.Dump(GlobalOreDict[key]))
+    print("GlobalOreDict updated : "..key.." =>"..TableHelpers.Dump(GlobalOreDict[key]))
 end
 
 function DirtHooks:Register(hookManager, dependencies)
