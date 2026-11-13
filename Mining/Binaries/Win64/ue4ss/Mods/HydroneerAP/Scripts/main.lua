@@ -83,13 +83,14 @@ ExecuteInGameThread(function()
 			print(IsInGame())
 			GetSlotWhenReady()
 			SaveHooks:LoadGame()
+			ShopHooks:ProcessShopItems()
 		end
 	end
 end)
 
 ExecuteInGameThread(function()
     RegisterHook(
-        "/Game/GM_Hydroneer.GM_Hydroneer_C:OnCompleted_04443C294CDB96DED26005BF09499B5C",
+        "/Game/GM_Hydroneer.GM_Hydroneer_C:OnCompleted_3F15BCF84DC8092F8F59C584D5404462", -- Game finished creating
         function(context, ...)
 			if HooksRegistered == false then
 				if IsInGame() then
@@ -97,12 +98,29 @@ ExecuteInGameThread(function()
 					print(IsInGame())
 					GetSlotWhenReady()
 					SaveHooks:LoadGame()
+					ShopHooks:ProcessShopItems()
 				end
 			end
         end
     )
 end)
 
+ExecuteInGameThread(function()
+    RegisterHook(
+        "/Game/GM_Hydroneer.GM_Hydroneer_C:OnCompleted_04443C294CDB96DED26005BF09499B5C", -- Game finished laoding
+        function(context, ...)
+			if HooksRegistered == false then
+				if IsInGame() then
+					RegisterHooks()
+					print(IsInGame())
+					GetSlotWhenReady()
+					SaveHooks:LoadGame()
+					ShopHooks:ProcessShopItems()
+				end
+			end
+        end
+    )
+end)
 ExecuteInGameThread(function()
     RegisterHook(
         "/Game/BP_GameController.BP_GameController_C:ReceiveDestroyed",

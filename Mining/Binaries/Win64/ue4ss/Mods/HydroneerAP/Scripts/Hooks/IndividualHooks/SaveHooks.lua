@@ -31,6 +31,13 @@ GlobalQuestDict = {
 	KingGuard04 = false,
 	King = false
 }
+
+UnlockedShopItemsList = {
+	"BP_PipeIntakeT1_C",
+	"BP_PipeElbowT1_C",
+	"BP_PipeStraightT1_C"
+}
+
 ---Register all save hooks
 ---@param hookManager HookManager
 ---@param dependencies table
@@ -118,7 +125,7 @@ function SaveHooks:LoadGame()
     end
 	print("Loaded location counts from " .. path .. "\n")
 	---[[
-	print("Ores:"..TableHelpers.Dump(GlobalQuestDict))
+	print("Ores:"..TableHelpers.Dump(GlobalOreDict))
 	print("Quests:"..TableHelpers.Dump(GlobalQuestDict))
 	--]]
 end

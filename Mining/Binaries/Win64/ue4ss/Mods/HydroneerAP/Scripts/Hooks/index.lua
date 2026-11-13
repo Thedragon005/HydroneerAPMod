@@ -9,7 +9,7 @@ local QuestHooks     = require "Hooks.IndividualHooks.QuestHooks"
 --local UIHooks        = require "Hooks.IndividualHooks.UIHooks"
 --local CapacityHook   = require "Hooks.IndividualHooks.CapacityHook"
 --local OtherHooks     = require "Hooks.IndividualHooks.OtherHooks"
---local ShopHooks      = require "Hooks.IndividualHooks.ShopHooks"
+ShopHooks      = require "Hooks.IndividualHooks.ShopHooks"
 local DirtHooks      = require "Hooks.IndividualHooks.DirtHooks"
 local OverridePickUpHooks      = require "Hooks.IndividualHooks.OverridePickUpHooks"
 
@@ -54,7 +54,7 @@ function Hooks:Register()
     --CapacityHook:Register(hookManager, dependencies)
 
     --if dependencies.archipelago.options.shopsanity == 1 then
-    --ShopHooks:Register(hookManager, dependencies)
+    ShopHooks:Register(hookManager, dependencies)
     DirtHooks:Register(hookManager, dependencies)
 	OverridePickUpHooks:Register(hookManager, dependencies)
     --end
