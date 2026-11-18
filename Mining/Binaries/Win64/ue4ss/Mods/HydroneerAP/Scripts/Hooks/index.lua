@@ -12,6 +12,7 @@ local QuestHooks     = require "Hooks.IndividualHooks.QuestHooks"
 ShopHooks      = require "Hooks.IndividualHooks.ShopHooks"
 local DirtHooks      = require "Hooks.IndividualHooks.DirtHooks"
 local OverridePickUpHooks      = require "Hooks.IndividualHooks.OverridePickUpHooks"
+local VeggiesHooks		= require "Hooks.IndividualHooks.VeggiesHooks"
 
 
 local Hooks = {}
@@ -57,6 +58,7 @@ function Hooks:Register()
     ShopHooks:Register(hookManager, dependencies)
     DirtHooks:Register(hookManager, dependencies)
 	OverridePickUpHooks:Register(hookManager, dependencies)
+	VeggiesHooks:Register(hookManager, dependencies)
     --end
     -- OtherHooks:Register(hookManager, dependencies)
 
