@@ -15,82 +15,62 @@ local function IsValidObj(obj)
     return obj ~= nil and obj:IsValid()
 end
 
-local function GetChunkInfo(chunk)
+local function GetVegInfo(Veg)
     return {
-        class        = ClassName(chunk),
-        owner        = chunk:GetOwner(),
-        attachParent = chunk:GetAttachParentActor(),
-        outer        = chunk:GetOuter(),
+        class        = ClassName(Veg),
+        owner        = Veg:GetOwner(),
+        attachParent = Veg:GetAttachParentActor(),
+        outer        = Veg:GetOuter(),
     }
 end
 
-local function CountVeggies(key)
-    GlobalVeggiesDict[key] = (GlobalVeggiesDict[key] or 0) + 1
-    print("GlobalVeggiesDict updated : "..key.." =>"..TableHelpers.Dump(GlobalVeggiesDict[key]))
-end
+GlobalVeggiesDict = GlobalVeggiesDict or {}
+
+local SCALEIN = "/Game/WorldObj/Items/Resources/Veg/BP_ParentVeg.BP_ParentVeg_C:ScaleIn"
+local TRACKED = {
+    BP_VegTomato_C   = "Tomato",
+    BP_VegCarrot_C   = "Carrot",
+    BP_VegCorn_C     = "Corn",
+    BP_VegOnion_C    = "Onion",
+    BP_VegBroccoli_C = "Broccoli",
+    BP_VegBeetroot_C = "Beetroot",
+}
+
+local seen = {}
 
 function VeggiesHooks:Register(hookManager, dependencies)
     local logger = dependencies.logger
 
     hookManager:Register(
-        "/Game/WorldObj/Items/Resources/BP_ParentRawResource.BP_ParentRawResource_C:ReceiveBeginPlay",
+        "/Game/WorldObj/Items/Resources/Veg/BP_ParentVeg.BP_ParentVeg_C:ScaleIn",
         function(context, ...)
-            self:ReceiveBeginPlay(context)
+            self:GrowVeggies(context)
 			--self.dumpProps(context, ...)
         end,
-        "Dirt - ReceiveBeginPlay"
+        "Veggies - ReceiveBeginPlay"
     )
-	hookManager:Register(
-        "/Game/WorldObj/Items/BuildItems/BP_GrindingWheel.BP_GrindingWheel_C:GrindGem",
-        function(context, UncutGem)
-			self:GrindGem(context, UncutGem)
-		end,
-        "GrindingWheel - GrindGem"
-    )
-	hookManager:Register(
-        "/Game/WorldObj/Items/BuildItems/Conveyors/BP_HookGemPolisher.BP_HookGemPolisher_C:SpawnGem",
-        function(context, OldUncut)
-			self:GrindGem(context, OldUncut)
-		end,
-        "HookGemPolisher - GrindGem"
-    )
-    logger:info("Dirt hooks registered")
-	--print("Dirt hooks registered")
+    logger:info("Veggies hooks registered")
+	print("Veggies hooks registered")
 end
 
-function VeggiesHooks:ReceiveBeginPlay(context)
-    local chunk = context:get()
-    if not IsValidObj(chunk) then return end
+function VeggiesHooks:GrowVeggies(context)
 
-    local info = GetChunkInfo(chunk)
+	local veg = context:get()
+    if not (veg and veg:IsValid()) then return end
 
-    -- Prevent uncut gems from being counted, we need to grind them to count
-	if info.class:match("^BP_Uncut") then return end
+    local class = veg:GetClass():GetFName():ToString()
+    local key = veg:GetFullName()
+    print("[Veg ScaleIn] " .. class .. " | " .. key .. "\n")  -- remove once it works
 
-    -- no owner = freshly spawned chunk
-    if not IsValidObj(info.owner) then
-        local short = info.class:match("^BP_([^_]+)_")    -- "Iron", "UncutRuby", ...
-        if not short then return end
+    local label = TRACKED[class]
+    if not label then return end        -- not one we count
+    if seen[key] then return end        -- already counted this instance
+    seen[key] = true
 
-        print("New chunk! " .. chunk:GetFullName())
-        CountOre(short)
-    end
-end
+    GlobalVeggiesDict[label] = (GlobalVeggiesDict[label] or 0) + 1
+    print(label .. " created by crop! Total: " .. GlobalVeggiesDict[label] .. "\n")
+	print("GlobalVeggiesDict updated : "..label.." =>"..TableHelpers.Dump(GlobalVeggiesDict[label]))
 
-function VeggiesHooks:GrindGem(context, gemParam)
-    local ok, gem = pcall(function() return gemParam:get() end)
-    if not (ok and IsValidObj(gem)) then return end
-
-    -- wheel:    instance "BP_UncutRuby_C_2147482345"
-    -- polisher: class    "BP_GemEmerald_C"
-    local name = gem:GetFName():ToString()
-    local kind = name:match("^BP_Uncut([^_]+)_C") or name:match("^BP_Gem([^_]+)_C")
-    if not kind then
-        print("GrindGem: unexpected gem " .. name)
-        return
-    end
-
-    CountOre("Gem" .. kind)    -- "GemEmerald"
 end
 
 return VeggiesHooks

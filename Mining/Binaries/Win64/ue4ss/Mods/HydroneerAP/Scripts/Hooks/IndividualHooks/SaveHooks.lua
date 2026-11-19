@@ -32,6 +32,15 @@ GlobalQuestDict = {
 	King = false
 }
 
+GlobalVeggiesDict = {
+	Tomato = 0,
+	Carrot = 0,
+	Corn = 0,
+	Onion = 0, 
+	Broccoli = 0,
+	Beetroot = 0,
+}
+
 UnlockedShopItemsList = {
 	"BP_PipeIntakeT1_C",
 	"BP_PipeElbowT1_C",
@@ -87,7 +96,7 @@ function SaveHooks:SaveGame(context)
     local tmp = path .. ".tmp"
 
     -- write_file throws on failure, so pcall it
-    local ok, err = pcall(json.write_file, tmp, { ores = GlobalOreDict,quests = GlobalQuestDict})
+    local ok, err = pcall(json.write_file, tmp, { ores = GlobalOreDict, quests = GlobalQuestDict, veggies = GlobalVeggiesDict})
     if not ok then
         print("Save failed: " .. tostring(err) .. "\n")
         return
@@ -123,10 +132,14 @@ function SaveHooks:LoadGame()
 	for k in pairs(GlobalQuestDict) do
         GlobalQuestDict[k] = (data and data.quests and tonumber(data.quests[k])) or 0
     end
+	for k in pairs(GlobalVeggiesDict) do
+		GlobalVeggiesDict[k] = (data and data.veggies and tonumber(data.veggies[k])) or 0
+	end
 	print("Loaded location counts from " .. path .. "\n")
 	---[[
 	print("Ores:"..TableHelpers.Dump(GlobalOreDict))
 	print("Quests:"..TableHelpers.Dump(GlobalQuestDict))
+	print("Veggies:"..TableHelpers.Dump(GlobalVeggiesDict))
 	--]]
 end
 
