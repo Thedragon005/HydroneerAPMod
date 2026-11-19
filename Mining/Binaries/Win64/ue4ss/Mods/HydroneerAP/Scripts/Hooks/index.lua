@@ -13,7 +13,7 @@ ShopHooks      = require "Hooks.IndividualHooks.ShopHooks"
 local DirtHooks      = require "Hooks.IndividualHooks.DirtHooks"
 local OverridePickUpHooks      = require "Hooks.IndividualHooks.OverridePickUpHooks"
 local VeggiesHooks		= require "Hooks.IndividualHooks.VeggiesHooks"
-
+local ParcelHooks		= require "Hooks.IndividualHooks.ParcelHooks"
 
 local Hooks = {}
 
@@ -56,6 +56,7 @@ function Hooks:Register()
 
     --if dependencies.archipelago.options.shopsanity == 1 then
     ShopHooks:Register(hookManager, dependencies)
+    --ParcelHooks:Register(hookManager, dependencies)
     DirtHooks:Register(hookManager, dependencies)
 	OverridePickUpHooks:Register(hookManager, dependencies)
 	VeggiesHooks:Register(hookManager, dependencies)

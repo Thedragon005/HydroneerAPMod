@@ -82,12 +82,19 @@ function QuestHooks:Register(hookManager, dependencies)
         end,
        "Quest - CompleteQuest"
     )
-	--]]
 	hookManager:Register(
         "/Game/Joe_Characters/BP/NPC/BP_NPC.BP_NPC_C:DestroyRequestNote",
         function(context, ...)
 			self:CompleteQuest(context,...)
 			--self.dumpProps(context, ...)
+        end,
+       "Quest - CompleteQuest"
+    )
+	--]]
+	hookManager:Register(
+        "/Game/Joe_Characters/BP/NPC/BP_NPC.BP_NPC_C:ClearRequest", --ClearRequest
+        function(context, ...)
+			self:CompleteQuest(context,...)
         end,
        "Quest - CompleteQuest"
     )

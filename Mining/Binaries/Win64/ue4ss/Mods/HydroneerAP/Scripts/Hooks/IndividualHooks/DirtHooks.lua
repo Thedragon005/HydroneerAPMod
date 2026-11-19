@@ -36,7 +36,6 @@ function DirtHooks:Register(hookManager, dependencies)
         "/Game/WorldObj/Items/Resources/BP_ParentRawResource.BP_ParentRawResource_C:ReceiveBeginPlay",
         function(context, ...)
             self:ReceiveBeginPlay(context)
-			--self.dumpProps(context, ...)
         end,
         "Dirt - ReceiveBeginPlay"
     )
