@@ -77,7 +77,8 @@ function ShopHooks:ProcessShopItems()
         end
 
         -- Display Disabled first, then Enabled last
-        local output = {
+        --
+		local output = {
             string.format("[ShopHooks] Disabled (%d):\n  %s",
                 #disabledItems,
                 #disabledItems > 0 and table.concat(disabledItems, "\n  ") or "None"),
@@ -85,7 +86,7 @@ function ShopHooks:ProcessShopItems()
                 #enabledItems,
                 #enabledItems > 0 and table.concat(enabledItems, "\n  ") or "None")
         }
-        print(table.concat(output, "\n") .. "\n")
+        --print(table.concat(output, "\n") .. "\n")
     end)
 end
 
