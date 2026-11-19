@@ -93,7 +93,7 @@ end
 function SaveHooks:SaveGame(context)
 	local controller = context:get()
     local path = savePath(controller)
-    path = path:gsub("%^ ", "_")
+    path = path:gsub(" ", "_")
 	local tmp = path .. ".tmp"
 
     -- write_file throws on failure, so pcall it
@@ -118,7 +118,7 @@ function SaveHooks:LoadGame()
     -- Directly utilizing the absolute path you specified
     -- Step up twice from Binaries\Win64 to reach the root "Mining" folder
 	local path = "..\\..\\Content\\Paks\\LogicMods\\HydroneerRandomizer_data\\save_" .. slotKey() .. ".json"
-	path = path:gsub("%^ ", "_")
+	path = path:gsub(" ", "_")
 	print("Resolved Path: " .. path)
 	local ok, data = pcall(json.read_file, path)
 	if not ok then
